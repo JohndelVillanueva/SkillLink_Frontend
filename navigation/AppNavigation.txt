@@ -1,0 +1,255 @@
+import "react-native-gesture-handler";
+import { useState, useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AppStack from "./AppStack";
+import AuthStack from "./AuthStack";
+
+// APPSTACK SCREENS (USER/VERICATION UI)
+import Home from "../screens/worker-interface/SkillCheckBox";
+import EditProfile from "../screens/user-interface/EditProfile";
+import Login from "../screens/user-interface/Login";
+import Notification from "../screens/user-interface/Notification";
+import Profile from "../screens/user-interface/Profile";
+import Ratings from "../screens/user-interface/Status";
+import Register from "../screens/user-interface/Register";
+import SearchResult from "../screens/user-interface/SearchResult";
+import SetupProfile from "../screens/user-interface/SetupProfile";
+import Status from "../screens/user-interface/Status";
+import UserRequest from "../screens/user-interface/UserRequest";
+import WelcomeScreen from "../screens/user-interface/WelcomeScreen";
+import WorkersProfile from "../screens/user-interface/WorkersProfile";
+import FirstStep from "../screens/verification-interface/FirstStep";
+import SecondStep from "../screens/verification-interface/SecondStep";
+
+// AUTHSTACK SCREENS (LOGIN/REGISTRATION UI)
+import EditWorkersProfileUI from "../screens/worker-interface/EditWorkersProfileUI";
+import NotificationWorkerUI from "../screens/worker-interface/NotificationWorkerUI";
+import ProfileWorkerUI from "../screens/worker-interface/ProfileWorkerUI";
+import SetupWorkerProfile from "../screens/worker-interface/SetupWorkerProfile";
+import SkillCheckBox from "../screens/worker-interface/SkillCheckBox";
+import StatusWorkerUI from "../screens/worker-interface/StatusWorkerUI";
+import WorkerRegistration from "../screens/worker-interface/WorkerRegistration";
+
+import {
+    CardStyleInterpolators,
+    createStackNavigator,
+} from "@react-navigation/stack";
+
+const Stack = createStackNavigator();
+
+const AppNavigation = () => {
+    const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    const [userType, setUserType] = useState(null);
+
+    useEffect(() => {
+        const getUserType = async () => {
+            try {
+                const userSessionJSON = await AsyncStorage.getItem("usersession");
+                if (userSessionJSON) {
+                    const userData = JSON.parse(userSessionJSON);
+                    setUserType(userData.user_type);
+                }
+            } catch (error) {
+                console.error("Error retrieving user data:", error);
+            }
+        };
+
+        getUserType();
+    }, []);
+
+    useEffect(() => {
+        const getData = async () => {
+            const userData = await AsyncStorage.getItem("usersession");
+            setUser(userData ? JSON.parse(userData) : null);
+        };
+
+        getData();
+    }, []);
+
+    useEffect(() => {
+        // Update the isAuthenticated state based on the user's presence
+        setIsAuthenticated(user !== null);
+    }, [user]);
+
+    return (
+        <NavigationContainer>
+            {/* <SkillCheckBox /> */}
+
+            {isAuthenticated ? (
+                <Stack.Navigator
+                    screenOptions={{
+                        headerShown: false,
+                        cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+                    }}
+                >
+                    {userType === 2 ? (
+                        <Stack.Screen name="ProfileWorkerUI" component={ProfileWorkerUI} />
+                    ) : (
+                        <Stack.Screen name="Home" component={Home} />
+                    )}
+                    <Stack.Screen name="SearchResult" component={SearchResult} />
+                    <Stack.Screen name="WorkersProfile" component={WorkersProfile} />
+                    <Stack.Screen name="UserRequest" component={UserRequest} />
+                    <Stack.Screen name="Profile" component={Profile} />
+                    <Stack.Screen name="EditProfile" component={EditProfile} />
+                    <Stack.Screen name="Notification" component={Notification} />
+                    <Stack.Screen name="Status" component={Status} />
+                    <Stack.Screen
+                        name="EditWorkersProfileUI"
+                        component={EditWorkersProfileUI}
+                    />
+                    <Stack.Screen
+                        name="NotificationWorkerUI"
+                        component={NotificationWorkerUI}
+                    />
+                    <Stack.Screen name="StatusWorkerUI" component={StatusWorkerUI} />
+                    <Stack.Screen
+                        name="SetupWorkerProfile"
+                        component={SetupWorkerProfile}
+                    />
+                    <Stack.Screen name="Ratings" component={Ratings} />
+                    <Stack.Screen name="FirstStep" component={FirstStep} />
+                    <Stack.Screen name="SecondStep" component={SecondStep} />
+                </Stack.Navigator>
+            ) : (
+                <Stack.Navigator
+                    screenOptions={{
+                        headerShown: false,
+                        cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+                    }}
+                >
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="Register" component={Register} />
+                    <Stack.Screen
+                        name="WorkerRegistration"
+                        component={WorkerRegistration}
+                    />
+                    <Stack.Screen name="SetupProfile" component={SetupProfile} />
+                    <Stack.Screen
+                        name="SetupWorkerProfile"
+                        component={SetupWorkerProfile}
+                    />
+                    <Stack.Screen name="SkillCheckBox" component={SkillCheckBox} />
+                </Stack.Navigator>
+            )}
+        </NavigationContainer>
+    );
+};
+
+export default AppNavigation;
+
+
+const [user, setUser] = useState(null);
+    const [userType, setUserType] = useState(null);
+
+    useEffect(() => {
+        const getUserType = async () => {
+            try {
+                const userSessionJSON = await AsyncStorage.getItem("usersession");
+                if (userSessionJSON) {
+                    const userData = JSON.parse(userSessionJSON);
+                    setUserType(userData.user_type);
+                }
+            } catch (error) {
+                console.error("Error retrieving user data:", error);
+            }
+        };
+
+        getUserType();
+    }, []);
+
+    // useEffect(() => {
+    //     const checkUserSession = async () => {
+    //         const userData = await AsyncStorage.getItem("usersession");
+    //         setUser(userData ? JSON.parse(userData) : null);
+    //     };
+
+    //     checkUserSession();
+    // }, []);
+
+    // const handleLogin = (userData) => {
+    //     setUser(userData);
+    //     AsyncStorage.setItem("usersession", JSON.stringify(userData));
+    // };
+
+    // const handleLogout = async () => {
+    //     setUser(null);
+    //     await AsyncStorage.removeItem("usersession");
+    // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <NavigationContainer>
+            <Stack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+                }}
+            >
+                {user ? (
+                    <>
+                        < Stack.Screen name="Home" component={Home} />
+                        <Stack.Screen name="SearchResult" component={SearchResult} />
+                        <Stack.Screen name="WorkersProfile" component={WorkersProfile} />
+                        <Stack.Screen name="UserRequest" component={UserRequest} />
+                        <Stack.Screen name="Profile" component={Profile} />
+                        <Stack.Screen name="EditProfile" component={EditProfile} />
+                        <Stack.Screen name="Notification" component={Notification} />
+                        <Stack.Screen name="Status" component={Status} />
+
+
+
+
+                        <Stack.Screen name="ProfileWorkerUI" component={ProfileWorkerUI} />
+                        <Stack.Screen
+                            name="EditWorkersProfileUI"
+                            component={EditWorkersProfileUI}
+                        />
+                        <Stack.Screen
+                            name="NotificationWorkerUI"
+                            component={NotificationWorkerUI}
+                        />
+                        <Stack.Screen name="StatusWorkerUI" component={StatusWorkerUI} />
+                        <Stack.Screen name="Ratings" component={Ratings} />
+                        <Stack.Screen name="FirstStep" component={FirstStep} />
+                        <Stack.Screen name="SecondStep" component={SecondStep} />
+                    </>
+                ) : (
+
+                    <>
+                        <Stack.Screen name="Login" component={Login} />
+                        <Stack.Screen name="Register" component={Register} />
+                        <Stack.Screen
+                            name="WorkerRegistration"
+                            component={WorkerRegistration}
+                        />
+                        <Stack.Screen
+                            name="SetupWorkerProfile"
+                            component={SetupWorkerProfile}
+                        />
+                        <Stack.Screen
+                            name="SkillCheckBox"
+                            component={SkillCheckBox}
+                        />
+                    </>
+                )}
+
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+};
